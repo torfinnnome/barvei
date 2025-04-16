@@ -2,8 +2,8 @@
 
 **Plot your drive, see the freeze! Klarvei helps you check the weather *along* your planned driving route, especially when you *really* don't want surprises involving snow and sub-zero temperatures.**
 
-[![Klarvei Input Form](placeholder_path/screenshot_input.png)](placeholder_path/screenshot_input.png)
-[![Klarvei Route and Weather Result](placeholder_path/screenshot_results.png)](placeholder_path/screenshot_results.png)
+[![Klarvei Input Form](sh0t1.png)](sh0t1.png)
+[![Klarvei Route and Weather Result](sh0t2.png)](sh0t2.png)
 
 *(Click images to enlarge)*
 
