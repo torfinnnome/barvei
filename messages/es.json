@@ -1,18 +1,32 @@
 {
   "HomePage": {
-    "title": "Planificador de Clima en Ruta",
-    "startLabel": "Dirección de Inicio:",
-    "endLabel": "Dirección de Fin:",
-    "calculateButton": "Calcular Ruta y Clima",
+    "title": "Planificador de ruta y clima",
+    "startLabel": "Dirección de inicio:",
+    "endLabel": "Dirección de destino:",
+    "calculateButton": "Calcular ruta y clima",
     "loading": "Calculando...",
     "error": "Error: {errorMessage}",
-    "routeInfo": "Distancia de Ruta: {distance} km, Duración: {duration}",
+    "routeInfo": "Distancia de ruta: {distance} km, duración: {duration}",
     "weatherPoints": "Clima a lo largo de la ruta:",
     "startPoint": "Inicio",
-    "endPoint": "Fin",
+    "endPoint": "Destino",
     "intermediatePoint": "Punto {index}",
     "time": "Hora",
     "temp": "Temp",
-    "weather": "Clima"
+    "weather": "Clima",
+    "placeholderStart": "ej., Estación Central de Oslo",
+    "placeholderEnd": "ej., Estación de Bergen",
+    "dateLabel": "Fecha:",
+    "timeLabel": "Hora:",
+    "typeLabel": "La hora representa:",
+    "errorInvalidDateTime": "Por favor, introduce una fecha y hora válidas.",
+    "waypointLabel": "Punto intermedio {index}:",
+    "placeholderWaypoint": "Introduce la dirección del punto intermedio",
+    "removeWaypointLabel": "Eliminar punto intermedio {index}",
+    "addWaypointLabel": "Añadir punto intermedio"
+  },
+  "Generic": {
+    "departure": "Salida",
+    "arrival": "Llegada"
   }
 }

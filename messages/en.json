@@ -1,13 +1,13 @@
 {
   "HomePage": {
-    "title": "Route Weather Planner",
-    "startLabel": "Start Address:",
-    "endLabel": "End Address:",
-    "calculateButton": "Calculate Route & Weather",
+    "title": "Route & weather planner",
+    "startLabel": "Start address:",
+    "endLabel": "End address:",
+    "calculateButton": "Calculate route & weather",
     "loading": "Calculating...",
     "error": "Error: {errorMessage}",
-    "routeInfo": "Route Distance: {distance} km, Duration: {duration}",
-    "weatherPoints": "Weather Along Route:",
+    "routeInfo": "Route distance: {distance} km, duration: {duration}",
+    "weatherPoints": "Weather along route:",
     "startPoint": "Start",
     "endPoint": "End",
     "intermediatePoint": "Point {index}",
@@ -22,8 +22,8 @@
     "errorInvalidDateTime": "Please enter a valid date and time.",
     "waypointLabel": "Waypoint {index}:",
     "placeholderWaypoint": "Enter waypoint address",
-    "removeWaypointLabel": "Remove Waypoint {index}",
-    "addWaypointLabel": "Add Waypoint"
+    "removeWaypointLabel": "Remove waypoint {index}",
+    "addWaypointLabel": "Add waypoint"
   },
   "Generic": {
     "departure": "Departure",

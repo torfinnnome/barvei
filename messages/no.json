@@ -1,18 +1,32 @@
 {
   "HomePage": {
-    "title": "Ruteværplanlegger",
+    "title": "Rute- og værplanlegger",
     "startLabel": "Startadresse:",
     "endLabel": "Sluttadresse:",
-    "calculateButton": "Beregn Rute & Vær",
+    "calculateButton": "Beregn rute og vær",
     "loading": "Beregner...",
     "error": "Feil: {errorMessage}",
-    "routeInfo": "Ruteavstand: {distance} km, Varighet: {duration}",
+    "routeInfo": "Ruteavstand: {distance} km, varighet: {duration}",
     "weatherPoints": "Vær langs ruten:",
     "startPoint": "Start",
     "endPoint": "Slutt",
     "intermediatePoint": "Punkt {index}",
     "time": "Tid",
     "temp": "Temp",
-    "weather": "Vær"
+    "weather": "Vær",
+    "placeholderStart": "f.eks. Oslo Sentralstasjon",
+    "placeholderEnd": "f.eks. Bergen Stasjon",
+    "dateLabel": "Dato:",
+    "timeLabel": "Tid:",
+    "typeLabel": "Tid representerer:",
+    "errorInvalidDateTime": "Vennligst oppgi en gyldig dato og tid.",
+    "waypointLabel": "Veipunkt {index}:",
+    "placeholderWaypoint": "Skriv inn adresse for veipunkt",
+    "removeWaypointLabel": "Fjern Veipunkt {index}",
+    "addWaypointLabel": "Legg til Veipunkt"
+  },
+  "Generic": {
+    "departure": "Avgang",
+    "arrival": "Ankomst"
   }
 }
