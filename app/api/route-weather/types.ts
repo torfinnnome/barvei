@@ -1,10 +1,10 @@
 // app/api/route-weather/types.ts
-import type { FeatureCollection, LineString } from 'geojson';
+import type { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 export interface RouteData {
     distance: number; // meters
     duration: number; // seconds
-    geoJson: FeatureCollection<LineString>; // Route geometry
+    geoJson: FeatureCollection<Geometry>; // Route geometry
     // Add coordinates if needed separately, but geoJson contains them
     // coordinates: [number, number][];
     legs: any[]; // Raw leg data from ORS might be useful

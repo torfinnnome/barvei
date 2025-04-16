@@ -292,7 +292,7 @@ export async function POST(request: Request) {
         const allAddresses = [startAddress, ...waypoints, endAddress];
         console.log('[API DEBUG] Geocoding addresses:', allAddresses);
         const geocodeResults = await Promise.all(
-             allAddresses.map(addr => geocodeORS(addr, apiKey))
+             allAddresses.map(addr => geocodeORS(addr as string, apiKey as string))
         );
 
         // Check for any failed geocoding results
@@ -329,7 +329,7 @@ export async function POST(request: Request) {
 
         // --- Get Route (using updated function) ---
         console.log('[API DEBUG] Attempting routing with waypoints...');
-        const routeData = await getRouteORS(allCoords, apiKey); // Pass array of coords
+        const routeData = await getRouteORS(allCoords, apiKey as string); // Pass array of coords
         if (!routeData) return NextResponse.json({ error: 'Could not calculate route with waypoints' }, { status: 400 }); // Error might be thrown now
         const totalRouteDurationSeconds = routeData.duration;
         console.log(`[API DEBUG] Routing successful. Duration: ${totalRouteDurationSeconds.toFixed(0)}s`);
@@ -362,7 +362,7 @@ export async function POST(request: Request) {
 
             console.log(`[API DEBUG] Weather check for Point ${index}: Lat=${point.lat.toFixed(4)}, Lon=${point.lon.toFixed(4)}, TargetTimeUTC=${new Date(arrivalTimeAtPointUTC).toISOString()}`);
 
-            const timeseries = await getWeatherYrNo(point.lat, point.lon, userAgent);
+            const timeseries = await getWeatherYrNo(point.lat, point.lon, userAgent as string);
             const forecast = findForecastForTime(timeseries, arrivalTimeAtPointUTC); // Use calculated arrival time
 
             return {

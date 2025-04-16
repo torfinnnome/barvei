@@ -2,7 +2,7 @@
 'use client';
 
 import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
-import L, { LatLngExpression, LatLngBounds } from 'leaflet'; // Import LatLngBounds type
+import L, { LatLngExpression, LatLngBounds, PointTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { WeatherPoint } from '@/app/api/route-weather/types';
 import { useTranslations } from 'next-intl';
@@ -56,7 +56,7 @@ L.Icon.Default.mergeOptions({
 // End icon fix
 
 interface MapComponentProps {
-    routeGeoJson: GeoJSON.FeatureCollection | null;
+    routeGeoJson: GeoJSON.FeatureCollection | null | undefined;
     weatherPoints: WeatherPoint[];
 }
 
@@ -117,7 +117,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ routeGeoJson, weatherPoints
 
     // --- Define Padding for fitBounds ---
     const boundsOptions = {
-        padding: [50, 50] // Add 50px padding top/bottom and left/right
+        padding: [50, 50] as PointTuple // Add 50px padding top/bottom and left/right
     };
 
     // Helper function for marker popups
