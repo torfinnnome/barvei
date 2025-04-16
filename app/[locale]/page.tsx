@@ -96,12 +96,23 @@ export default function HomePage() {
         setRouteData(null);
         setWeatherPoints([]);
 
-        // Basic validation for date/time
-        if (!travelDate || !travelTime) {
-            setError(t('errorInvalidDateTime')); // Add translation for this
-            setIsLoading(false);
-            return;
-        }
+          // 1. Combine date and time input from user
+        const localDateTimeString = `${travelDate}T${travelTime}:00`;
+
+        // 2. Create a Date object - JS assumes this is in the BROWSER's local timezone
+        const localDateObject = new Date(localDateTimeString);
+
+        // 3. Validate the created date
+        if (isNaN(localDateObject.getTime())) {
+             setError(t('errorInvalidDateTime'));
+             setIsLoading(false);
+             return;
+         }
+
+        // 4. Convert the local date object to an ISO 8601 UTC string
+        const baseTimeISO = localDateObject.toISOString(); // e.g., "2025-04-17T10:00:00.000Z" if local was 12:00 CEST
+
+        console.log(`[Frontend DEBUG] Local Input: ${localDateTimeString}, Sent as UTC ISO: ${baseTimeISO}`);
 
         try {
             const response = await fetch('/api/route-weather', {
@@ -114,8 +125,7 @@ export default function HomePage() {
                     startAddress,
                     waypoints: waypoints.filter(wp => wp.trim() !== ''),
                     endAddress,
-                    travelDate,
-                    travelTime,
+                    baseTimeISO: baseTimeISO,
                     travelType
                  }),
             });

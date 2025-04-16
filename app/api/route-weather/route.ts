@@ -279,16 +279,15 @@ export async function POST(request: Request) {
             startAddress,
             waypoints = [], // Default to empty array if not provided
             endAddress,
-            travelDate,
-            travelTime,
+            baseTimeISO,
             travelType
         } = await request.json();
 
         console.log(`[API DEBUG] Addresses: Start="${startAddress}", Waypoints=[${waypoints.join('; ')}], End="${endAddress}"`);
-        console.log(`[API DEBUG] Time params: Date="${travelDate}", Time="${travelTime}", Type="${travelType}"`);
+        console.log(`[API DEBUG] Time params: BaseISO="${baseTimeISO}", Type="${travelType}"`);
 
         if (!startAddress || !endAddress) return NextResponse.json({ error: 'Start and End addresses are required' }, { status: 400 });
-        if (!travelDate || !travelTime || !travelType) return NextResponse.json({ error: 'Travel date, time, and type are required' }, { status: 400 });
+        if (!baseTimeISO || !travelType) return NextResponse.json({ error: 'Base time ISO string and travel type are required' }, { status: 400 });
 
         // --- Geocode ALL points ---
         const allAddresses = [startAddress, ...waypoints, endAddress];
@@ -309,22 +308,19 @@ export async function POST(request: Request) {
         // --- End Geocode ---
 
 
-        // --- Calculate Base Time ---
+        // --- Calculate Base Time from ISO String ---
         let baseTimeUTCMillis: number;
         try {
-            // Combine date and time strings. IMPORTANT: This assumes the server's local timezone
-            // when parsing. If the server is in UTC, this might be fine. If it's in a different
-            // timezone, the conversion to UTC via getTime() will reflect that.
-            // For robust timezone handling, consider using a library like date-fns-tz.
-            const localDateTime = new Date(`${travelDate}T${travelTime}:00`);
-            if (isNaN(localDateTime.getTime())) { // Check if date is valid
-                 throw new Error('Invalid date or time format provided.');
+            // Parsing an ISO 8601 string (especially with 'Z') is reliable
+            const parsedUTCDate = new Date(baseTimeISO);
+            if (isNaN(parsedUTCDate.getTime())) {
+                 throw new Error('Invalid ISO date string provided.');
             }
-            baseTimeUTCMillis = localDateTime.getTime();
-            console.log(`[API DEBUG] Parsed local DateTime: ${localDateTime.toISOString()}, Base UTC Millis: ${baseTimeUTCMillis}`);
+            baseTimeUTCMillis = parsedUTCDate.getTime();
+            console.log(`[API DEBUG] Parsed UTC Date: ${parsedUTCDate.toISOString()}, Base UTC Millis: ${baseTimeUTCMillis}`);
          } catch (e: any) {
-             console.error("[API ERROR] Failed to parse date/time:", e.message);
-             return NextResponse.json({ error: `Invalid date or time format: ${e.message}` }, { status: 400 });
+             console.error("[API ERROR] Failed to parse baseTimeISO:", e.message);
+             return NextResponse.json({ error: `Invalid base time format: ${e.message}` }, { status: 400 });
          }
         // --- End Calculate Base Time ---
 
@@ -346,9 +342,11 @@ export async function POST(request: Request) {
         // --- Calculate Actual Departure Time (needed for arrival type) ---
         let actualDepartureTimeUTCMillis: number;
         if (travelType === 'arrival') {
+            // Base time IS the arrival time, subtract duration for departure
             actualDepartureTimeUTCMillis = baseTimeUTCMillis - Math.round(totalRouteDurationSeconds * 1000);
              console.log(`[API DEBUG] Travel Type: Arrival. Calculated Departure UTC Millis: ${actualDepartureTimeUTCMillis}`);
         } else { // travelType === 'departure'
+            // Base time IS the departure time
             actualDepartureTimeUTCMillis = baseTimeUTCMillis;
              console.log(`[API DEBUG] Travel Type: Departure. Using Base UTC Millis as Departure: ${actualDepartureTimeUTCMillis}`);
         }
