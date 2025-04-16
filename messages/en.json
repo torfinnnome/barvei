@@ -1,0 +1,32 @@
+{
+  "HomePage": {
+    "title": "Route Weather Planner",
+    "startLabel": "Start Address:",
+    "endLabel": "End Address:",
+    "calculateButton": "Calculate Route & Weather",
+    "loading": "Calculating...",
+    "error": "Error: {errorMessage}",
+    "routeInfo": "Route Distance: {distance} km, Duration: {duration}",
+    "weatherPoints": "Weather Along Route:",
+    "startPoint": "Start",
+    "endPoint": "End",
+    "intermediatePoint": "Point {index}",
+    "time": "Time",
+    "temp": "Temp",
+    "weather": "Weather",
+    "placeholderStart": "e.g., Oslo Central Station",
+    "placeholderEnd": "e.g., Bergen Station",
+    "dateLabel": "Date:",
+    "timeLabel": "Time:",
+    "typeLabel": "Time represents:",
+    "errorInvalidDateTime": "Please enter a valid date and time.",
+    "waypointLabel": "Waypoint {index}:",
+    "placeholderWaypoint": "Enter waypoint address",
+    "removeWaypointLabel": "Remove Waypoint {index}",
+    "addWaypointLabel": "Add Waypoint"
+  },
+  "Generic": {
+    "departure": "Departure",
+    "arrival": "Arrival"
+  }
+}

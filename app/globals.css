@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+    /* Use a dark background similar to screenshot */
+    background-color: #1a1a2e; /* Dark blue/purple - adjust as needed */
+    color: #333; /* Default text color for content */
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+* {
+    box-sizing: border-box;
+}
+
+div > select {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+ }
+
+/* Basic map container sizing */
+.leaflet-container {
+  height: 400px;
+  width: 100%;
+}

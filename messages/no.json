@@ -1,0 +1,18 @@
+{
+  "HomePage": {
+    "title": "Ruteværplanlegger",
+    "startLabel": "Startadresse:",
+    "endLabel": "Sluttadresse:",
+    "calculateButton": "Beregn Rute & Vær",
+    "loading": "Beregner...",
+    "error": "Feil: {errorMessage}",
+    "routeInfo": "Ruteavstand: {distance} km, Varighet: {duration}",
+    "weatherPoints": "Vær langs ruten:",
+    "startPoint": "Start",
+    "endPoint": "Slutt",
+    "intermediatePoint": "Punkt {index}",
+    "time": "Tid",
+    "temp": "Temp",
+    "weather": "Vær"
+  }
+}

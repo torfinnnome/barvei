@@ -1,0 +1,386 @@
+/* app/[locale]/page.module.css */
+
+/* General layout */
+.main {
+  padding: 2rem 2rem; 
+  max-width: 850px; /* Wider */
+  margin: 2rem auto;
+  background-color: #ffffff; /* White content background */
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.main h1 {
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #2c3e50; /* Darker blue/grey heading */
+    margin-bottom: 2.5rem;
+    font-weight: 600;
+}
+
+/* Input group and Autocomplete */
+.inputGroup {
+  margin-bottom: 0.8rem; /* REDUCED */
+}
+
+.inputGroup label {
+  margin-bottom: 0.25rem; /* REDUCED */
+  font-weight: 500;
+  color: #34495e;
+  font-size: 0.85rem; /* Smaller label */
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 0.7rem 0.9rem; /* Slightly less padding */
+  font-size: 0.95rem; /* Slightly smaller font */
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  color: #2c3e50;
+  background-color: #fdfdfe;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.inputGroup input:focus {
+    border-color: #3498db;
+    outline: 0;
+    box-shadow: 0 0 0 0.15rem rgba(52, 152, 219, 0.2); /* Smaller glow */
+}
+
+/* Autocomplete specific */
+.autocompleteContainer {
+    position: relative;
+}
+
+.suggestionsList {
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #ecf0f1; /* Lighter border */
+    border-top: none;
+    list-style: none;
+    margin: -1px 0 0 0;
+    padding: 0;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    border-radius: 0 0 4px 4px;
+}
+
+.suggestionsList li {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f7f9f9; /* Very faint separator */
+    color: #34495e;
+    font-size: 0.95rem;
+}
+ .suggestionsList li:last-child {
+     border-bottom: none;
+ }
+
+.suggestionsList li:hover {
+    background-color: #ecf0f1; /* Light grey/blue hover */
+    color: #2c3e50;
+}
+
+.loadingIndicator {
+    position: absolute;
+    right: 10px;
+    top: calc(50% + 0.6rem); /* Adjust based on label+input */
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    color: #7f8c8d; /* Grey */
+}
+
+/* Button */
+.main button {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1.5rem; /* Slightly taller */
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  /* Match screenshot's blue button */
+  background-color: #3498db; /* Primary blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin: 1.5rem 0 1rem 0; /* Adjust spacing */
+  transition: background-color 0.2s ease;
+}
+
+.main button:hover:not(:disabled) {
+    background-color: #2980b9; /* Darker blue */
+}
+
+.main button:disabled {
+  background-color: #95a5a6; /* Grey when disabled */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Error Message */
+.error {
+  color: #c0392b; /* Darker red */
+  background-color: #f5e8e8; /* Lighter red background */
+  border: 1px solid #e74c3c; /* Red border */
+  padding: 0.8rem 1.25rem;
+  margin: 1rem 0; /* Consistent margin */
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* Map Container */
+.mapContainer {
+    margin: 1.5rem 0;
+    border: 1px solid #ecf0f1; /* Light border */
+    border-radius: 6px; /* Slightly more rounded */
+    overflow: hidden;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+}
+.mapContainer > .leaflet-container {
+    border-radius: 6px;
+}
+
+/* Results Area */
+.results {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #ecf0f1; /* Light separator */
+}
+
+.results h2, .results h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+}
+
+
+
+.weatherTimeline {
+    display: flex;
+    flex-wrap: nowrap; /* PREVENT WRAPPING if possible, rely on min-width */
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9f9;
+    border-radius: 6px;
+    overflow-x: auto; /* Add scroll if it truly overflows */
+    justify-content: space-between; /* Distribute space */
+}
+
+.weatherPoint {
+    flex: 1 1 auto; /* Allow shrinking/growing from auto basis */
+    /* Remove min-width or set it lower if using flex-basis */
+    /* min-width: 130px; */
+    max-width: 180px; /* Optional: prevent boxes getting too wide */
+    min-height: 120px;
+    padding: 0.8rem 1rem;
+    border: 1px solid #e9ecef;
+    border-radius: 6px; /* Slightly more rounded */
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+
+    /* --- Add Flexbox for internal alignment --- */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align content to the top */
+    text-align: left; /* << CHANGE to left align text */
+    min-height: 130px; /* << ADD minimum height for consistency */
+}
+.weatherPoint:hover {
+    transform: translateY(-2px);
+}
+
+
+.weatherPoint h4 {
+    margin-top: 0;
+    margin-bottom: 0.6rem; /* More space below title */
+    font-size: 1rem;
+    color: #34495e;
+    font-weight: 600;
+    text-align: center; /* Keep title centered */
+    flex-shrink: 0; /* Prevent title from shrinking */
+}
+
+.weatherPoint p {
+    margin: 0.2rem 0; /* Tighter vertical margin between lines */
+    font-size: 0.9rem;
+    color: #2c3e50;
+    line-height: 1.4;
+    flex-shrink: 0; /* Prevent text lines from shrinking */
+}
+
+/* Optional: Style label part differently */
+.weatherPoint p::before {
+    /* Example: Make "Tid:", "Temp:", "Vær:" slightly bolder or lighter */
+    /* content: attr(data-label); */ /* Requires adding data-label attribute in JSX */
+    /* display: inline-block; */
+    /* width: 40px; */ /* Adjust width */
+    /* font-weight: 500; */
+    /* color: #6c757d; */
+    /* margin-right: 0.5em; */
+}
+
+/* Style the last p tag (weather symbol text) */
+.weatherPoint p:last-of-type {
+    margin-top: 0.5rem; /* Add a bit more space before the symbol */
+    font-style: italic; /* Optional: italicize symbol text */
+    color: #555; /* Slightly lighter color for symbol text */
+}
+
+
+/* Container for time inputs */
+.timeSelectionContainer {
+    gap: 1rem; /* Slightly reduce gap */
+    margin: 1.2rem 0; /* Reduce vertical margin */
+    padding: 1rem 1.2rem; /* Slightly reduce padding */
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    align-items: center; /* << Change to center for better vertical alignment */
+}
+
+/* Target the specific input group for the radio buttons */
+.timeSelectionContainer .inputGroup:last-of-type {
+    flex-basis: 280px;
+    flex-grow: 1;
+    /* Remove margin-bottom if it causes alignment issues with other inputs */
+    margin-bottom: 0;
+}
+.timeSelectionContainer .inputGroup label {
+    margin-bottom: 0.25rem;
+}
+/* Style the container *around* the radio buttons */
+.radioGroup {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    /* Remove padding-top and min-height, rely on parent flex alignment */
+}
+
+/* Style each radio button label */
+.radioGroup label {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 7rem;
+    cursor: pointer;
+    font-weight: 400;
+    color: #495057;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.radioGroup label:last-child {
+    margin-right: 0;
+}
+
+/* Style the radio button input itself */
+.radioGroup input[type="radio"] {
+    margin: 0;
+    /* This controls space between radio circle and its TEXT */
+    /* margin-right: 0.6rem;   << Keep this around 0.5rem or 0.6rem */
+    margin-right: 0.5rem; /* << Keep this around 0.5rem or 0.6rem */
+    flex-shrink: 0;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+    display: inline-block;
+    accent-color: #3498db;
+}
+
+
+/* .addressInputs { */
+  /* display: flex; */
+  /* gap: 1.5rem; */
+/* } */
+/* .addressInputs > div { */
+  /* flex: 1; */
+/* } */
+
+/* Waypoint Specific Styles */
+.waypointGroup {
+    padding-left: 1rem;
+    border-left: 2px solid #e0e0e0;
+    margin-left: 0.5rem;
+    margin-bottom: 0.56em;
+    position: relative; /* Needed for suggestion list */
+}
+
+.waypointGroup label {
+    margin-bottom: 0.2rem;
+    /* ... */
+}
+
+/* Wrapper for input + remove btn */
+.waypointInputWrapper {
+    display: grid;                        /* << CHANGE to grid */
+    grid-template-columns: 1fr auto;      /* << Column 1: takes remaining space, Column 2: auto size */
+    gap: 0.4rem;                        /* << Space between input and button */
+    align-items: center;                /* << Vertically align items within grid cells */
+    width: 100%;
+}
+
+/* Waypoint Input Field - Allow shrinking, grow, define basis */
+.waypointInputWrapper input {
+    width: 100%; /* << Make it take full width OF ITS GRID CELL */
+    min-width: 100px;
+    /* Inherit visual styles (padding, border, etc.) */
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    color: #2c3e50;
+    background-color: #fdfdfe;
+    box-sizing: border-box; /* Important */
+}
+
+.addWaypointBtn {
+    margin: 0.3rem auto 0.8rem auto;
+    padding: 0.3rem 1rem;
+}
+
+.removeWaypointBtn {
+    padding: 0.2rem 0.4rem; /* MINIMAL PADDING */
+    font-size: 1.1rem;      /* SMALLER FONT for 'X' */
+    line-height: 1;
+    height: fit-content;    /* Fit height to content */
+
+    /* Visuals */
+    background: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #6c757d;
+    border-radius: 3px;
+    margin: 0;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    white-space: nowrap; /* Prevent X from wrapping strangely */
+}
+.removeWaypointBtn:hover {
+    opacity: 1;
+    color: #dc3545; /* Red */
+    border-color: #b1b1b1;
+    background-color: #f1f1f1;
+}
+
+/* Autocomplete adjustments for waypoints */
+.waypointGroup .suggestionsList {
+    position: absolute;
+    width: auto; /* Let it determine width based on grid column? */
+                 /* Or try setting it relative to the input's grid area if complex */
+    grid-column: 1 / 2; /* Explicitly place in first grid column */
+    left: 0;
+    top: 100%;
+    margin-top: 1px;
+    z-index: 100;
+    box-sizing: border-box;
+    /* ... inherit list styles ... */
+     /* May need to adjust max-width here */
+     max-width: calc(100% - 3rem); /* Fallback max-width approximation */
+}    
