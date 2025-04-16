@@ -265,7 +265,9 @@ export default function HomePage() {
             <h1>{t('title')}</h1>
 
             {/* Start Address */}
-            <div className={`${styles.inputGroup} ${styles.autocompleteContainer}`} ref={el => inputRefs.current[0] = el}>
+           <div
+            className={`${styles.inputGroup} ${styles.autocompleteContainer}`}
+                ref={(el) => { inputRefs.current[0] = el; }}>
                 <label htmlFor="start">{t('startLabel')}</label>
                 <input type="text" id="start" value={startAddress} onChange={(e) => handleAddressChange(e, 'start')} onFocus={() => suggestions['start']?.length > 0 && setShowSuggestions(prev => ({...prev, start: true}))} placeholder={t('placeholderStart')} autoComplete="off" />
                 {renderSuggestions('start')}
@@ -273,7 +275,10 @@ export default function HomePage() {
 
             {/* Waypoints Section */}
             {waypoints.map((waypoint, index) => (
-                <div key={index} className={`${styles.inputGroup} ${styles.autocompleteContainer} ${styles.waypointGroup}`} ref={el => inputRefs.current[index + 1] = el}>
+            <div
+                key={index}
+                className={`${styles.inputGroup} ${styles.autocompleteContainer} ${styles.waypointGroup}`}
+                ref={(el) => { inputRefs.current[index + 1] = el; }} >
                     <label htmlFor={`waypoint-${index}`}>{t('waypointLabel', { index: index + 1 })}</label> {/* New translation */}
                      <div className={styles.waypointInputWrapper}>
                         <input
@@ -297,7 +302,9 @@ export default function HomePage() {
 
 
             {/* End Address */}
-            <div className={`${styles.inputGroup} ${styles.autocompleteContainer}`} ref={el => inputRefs.current[waypoints.length + 1] = el}>
+            <div
+              className={`${styles.inputGroup} ${styles.autocompleteContainer}`}
+              ref={(el) => { inputRefs.current[waypoints.length + 1] = el; }} >
                 <label htmlFor="end">{t('endLabel')}</label>
                 <input type="text" id="end" value={endAddress} onChange={(e) => handleAddressChange(e, 'end')} onFocus={() => suggestions['end']?.length > 0 && setShowSuggestions(prev => ({...prev, end: true}))} placeholder={t('placeholderEnd')} autoComplete="off" />
                 {renderSuggestions('end')}
