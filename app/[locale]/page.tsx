@@ -8,6 +8,8 @@ import styles from './page.module.css';
 import type { RouteData, WeatherPoint } from '@/app/api/route-weather/types';
 import debounce from 'lodash.debounce';
 
+export const runtime = 'edge';
+
 // Dynamically import the Map component, prevent SSR because Leaflet needs window object
 const MapComponent = dynamic(() => import('@/components/MapComponent'), {
     ssr: false,

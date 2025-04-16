@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 import type { RouteData, WeatherPoint } from './types'; // Adjust path if needed
 import type { FeatureCollection, LineString } from 'geojson';
 
+export const runtime = 'edge';
+
 // --- OpenRouteService Functions ---
 
 async function geocodeORS(address: string, apiKey: string): Promise<{ lat: number, lon: number } | null> {

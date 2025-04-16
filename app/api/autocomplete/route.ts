@@ -1,6 +1,8 @@
 // app/api/autocomplete/route.ts
 import { NextResponse } from 'next/server';
 
+export const runtime = 'edge';
+
 export async function GET(request: Request) {
     const apiKey = process.env.ORS_API_KEY;
     if (!apiKey) {
