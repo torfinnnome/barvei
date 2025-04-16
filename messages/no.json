@@ -22,8 +22,8 @@
     "errorInvalidDateTime": "Vennligst oppgi en gyldig dato og tid.",
     "waypointLabel": "Veipunkt {index}:",
     "placeholderWaypoint": "Skriv inn adresse for veipunkt",
-    "removeWaypointLabel": "Fjern Veipunkt {index}",
-    "addWaypointLabel": "Legg til Veipunkt"
+    "removeWaypointLabel": "Fjern veipunkt {index}",
+    "addWaypointLabel": "Legg til veipunkt"
   },
   "Generic": {
     "departure": "Avgang",
