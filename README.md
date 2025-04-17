@@ -1,9 +1,9 @@
-# Klarvei 🚗💨🥶
+# Barvei 🚗💨🥶
 
-**Plot your drive, see the freeze! Klarvei helps you check the weather *along* your planned driving route, especially when you *really* don't want surprises involving snow and sub-zero temperatures.**
+**Plot your drive, see the freeze! Barvei helps you check the weather *along* your planned driving route, especially when you *really* don't want surprises involving snow and sub-zero temperatures.**
 
-[![Klarvei Input Form](sh0t1.png)](sh0t1.png)
-[![Klarvei Route and Weather Result](sh0t2.png)](sh0t2.png)
+[![Barvei Input Form](sh0t1.png)](sh0t1.png)
+[![Barvei Route and Weather Result](sh0t2.png)](sh0t2.png)
 
 *(Click images to enlarge)*
 
@@ -15,9 +15,9 @@ Ever driven towards a Norwegian mountain pass in October, humming happily, only 
 
 Standard weather apps tell you the weather *here* or *there*, but what about the 500km stretch *between* here and there, especially when elevation changes dramatically? What if it's +5°C at the start but plunges to -3°C precisely when you hit that notoriously sketchy mountain crossing halfway through?
 
-## The Solution: Klarvei ✨
+## The Solution: Barvei ✨
 
-Klarvei aims to bridge that gap. You give it:
+Barvei aims to bridge that gap. You give it:
 
 1.  A **Start Address**
 2.  An (optional) list of **Waypoints**
@@ -62,8 +62,8 @@ Want to run this locally? Sure, why not!
 
 1.  **Clone the repo:**
     ```bash
-    git clone https://github.com/torfinnnome/klarvei.git
-    cd klarvei
+    git clone https://github.com/torfinnnome/barvei.git
+    cd barvei
     ```
 2.  **Install dependencies:**
     ```bash
@@ -78,7 +78,7 @@ Want to run this locally? Sure, why not!
 
     # See MET Norway API docs: https://api.met.no/weatherapi/locationforecast/2.0/documentation
     # MUST uniquely identify your application. Format: AppName/Version ContactInfo(email/repo)
-    NEXT_PUBLIC_YR_USER_AGENT=MyKlarveiFork/0.1 myemail@example.com
+    NEXT_PUBLIC_YR_USER_AGENT=MyBarveiFork/0.1 myemail@example.com
     ```
     **Note:** The `NEXT_PUBLIC_YR_USER_AGENT` is technically safe to expose client-side, but it's good practice to keep API interactions backend-only where possible. The current implementation uses it in the backend API route.
 
@@ -103,7 +103,7 @@ Feel free to fork, submit issues, or suggest improvements!
 
 ## Disclaimer ⚠️
 
-Klarvei relies on third-party APIs (ORS, MET Norway) and forecasts. Forecasts can be wrong, routing estimates might not account for traffic or sudden closures, and this app is **no substitute for checking official road status reports (like Statens Vegvesen in Norway) and using common sense.** Don't drive into a blizzard just because an app said it *might* be okay hours ago. Drive safely!
+Barvei relies on third-party APIs (ORS, MET Norway) and forecasts. Forecasts can be wrong, routing estimates might not account for traffic or sudden closures, and this app is **no substitute for checking official road status reports (like Statens Vegvesen in Norway) and using common sense.** Don't drive into a blizzard just because an app said it *might* be okay hours ago. Drive safely!
 
 ---
 
