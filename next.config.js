@@ -12,6 +12,16 @@ const withNextIntl = createNextIntlPlugin(
 const nextConfig = {
   // Your other Next.js config options go here
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.met.no',
+        port: '',
+        pathname: '/images/weathericons/**', // Allow images specifically from this path
+      },
+    ],
+  },
 };
 
 // Use module.exports for CommonJS
