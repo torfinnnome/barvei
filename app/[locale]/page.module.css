@@ -383,4 +383,64 @@
     /* ... inherit list styles ... */
      /* May need to adjust max-width here */
      max-width: calc(100% - 3rem); /* Fallback max-width approximation */
-}    
+}
+
+/* --- Weather Table Styles --- */
+.weatherTableContainer {
+    margin-top: 1rem;
+    overflow-x: auto; /* Allow horizontal scrolling on small screens */
+    background-color: #f8f9f9;
+    border-radius: 6px;
+    padding: 0.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.weatherTable {
+    width: 100%;
+    border-collapse: collapse; /* Remove gaps between cells */
+    min-width: 500px; /* Prevent excessive squishing */
+}
+
+.weatherTable th,
+.weatherTable td {
+    padding: 0.75rem 0.6rem; /* Adjust padding */
+    text-align: center; /* Center align text */
+    border-bottom: 1px solid #e9ecef; /* Light horizontal lines */
+    font-size: 0.9rem;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.weatherTable th {
+    font-weight: 600;
+    color: #34495e;
+    background-color: #f1f3f5; /* Slightly different background for header */
+    border-bottom-width: 2px; /* Thicker line below header */
+}
+
+.weatherTable tr:last-child td {
+    border-bottom: none; /* Remove border from last row */
+}
+
+.weatherTable td:nth-child(1) { /* Point column */
+    text-align: left;
+    font-weight: 500;
+}
+.weatherTable td:nth-child(2) { /* Time column */
+    min-width: 100px; /* Give time column a bit more space */
+}
+.weatherTable td:nth-child(3) { /* Weather icon column */
+    min-width: 50px;
+}
+.weatherTable td:nth-child(4) { /* Temp column */
+    min-width: 50px;
+}
+.weatherTable td:nth-child(5) { /* Wind column */
+    min-width: 50px;
+    font-size: 1.2rem; /* Make wind arrow slightly larger */
+}
+
+
+.weatherIcon {
+    vertical-align: middle; /* Align icon nicely with text if needed */
+    /* Add any other specific styling for the icon */
+}
