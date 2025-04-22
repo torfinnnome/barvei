@@ -434,9 +434,12 @@
 .weatherTable td:nth-child(4) { /* Temp column */
     min-width: 50px;
 }
-.weatherTable td:nth-child(5) { /* Wind column */
+.weatherTable td:nth-child(5) { /* Wind direction column */
     min-width: 50px;
     font-size: 1.2rem; /* Make wind arrow slightly larger */
+}
+.weatherTable td:nth-child(6) { /* Wind speed column */
+   min-width: 60px; /* Slightly wider for speed + unit */
 }
 
 

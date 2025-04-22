@@ -119,10 +119,10 @@ async function getWeatherYrNo(lat: number, lon: number, userAgent: string): Prom
 // --- Helper Functions ---
 
 // Find the closest forecast in the time series *after* the target time
-function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { temperature?: number, symbolCode?: string, windDirection?: number } | null {
+function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { temperature?: number, symbolCode?: string, windDirection?: number, windSpeed?: number } | null {
     if (!timeseries || timeseries.length === 0) return null;
 
-    let bestMatch: { temperature?: number, symbolCode?: string, windDirection?: number } | null = null;
+    let bestMatch: { temperature?: number, symbolCode?: string, windDirection?: number, windSpeed?: number } | null = null;
     let smallestDiff = Infinity;
 
     for (const entry of timeseries) {
@@ -138,8 +138,9 @@ function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { 
                  symbolCode: entry.data.next_1_hours?.summary?.symbol_code ||
                              entry.data.next_6_hours?.summary?.symbol_code ||
                              entry.data.next_12_hours?.summary?.symbol_code,
-                 // Extract wind direction
-                 windDirection: entry.data.instant?.details?.wind_from_direction // degrees
+                 // Extract wind direction and speed
+                 windDirection: entry.data.instant?.details?.wind_from_direction, // degrees
+                 windSpeed: entry.data.instant?.details?.wind_speed // m/s
             } : null;
         }
     }
@@ -152,7 +153,8 @@ function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { 
              symbolCode: lastEntry.data.next_1_hours?.summary?.symbol_code ||
                          lastEntry.data.next_6_hours?.summary?.symbol_code ||
                          lastEntry.data.next_12_hours?.summary?.symbol_code,
-             windDirection: lastEntry.data.instant?.details?.wind_from_direction
+             windDirection: lastEntry.data.instant?.details?.wind_from_direction,
+             windSpeed: lastEntry.data.instant?.details?.wind_speed
          } : null;
     }
 
@@ -160,111 +162,122 @@ function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { 
 }
 
 
-// Select points along the route for weather checks
-function selectPointsAlongRoute(route: RouteData, maxPoints = 5): { lat: number, lon: number, timeOffsetSeconds: number }[] {
-    const points: { lat: number, lon: number, timeOffsetSeconds: number }[] = [];
+// Select points along the route for weather checks based on distance
+function selectPointsAlongRoute(route: RouteData, intervalKm = 50, maxPointsCap = 20): { lat: number, lon: number, timeOffsetSeconds: number, distanceOffsetMeters: number }[] {
+    const points: { lat: number, lon: number, timeOffsetSeconds: number, distanceOffsetMeters: number }[] = [];
+    const intervalMeters = intervalKm * 1000;
     // Assuming the first feature is the route line
     const routeGeometry = route.geoJson.features[0]?.geometry as LineString | undefined;
     if (!routeGeometry || routeGeometry.type !== 'LineString') {
          console.error("Invalid route geometry in GeoJSON");
          return [];
     }
-    const coordinates = routeGeometry.coordinates; // [[lon, lat], ...]
-    const totalDuration = route.duration;
+   const coordinates = routeGeometry.coordinates; // [[lon, lat], ...]
+   const totalDuration = route.duration;
+   const totalDistance = route.distance;
 
-    if (!coordinates || coordinates.length < 2 || totalDuration <= 0) {
-        // Handle edge cases
-         if (coordinates && coordinates.length > 0) {
-              points.push({ lon: coordinates[0][0], lat: coordinates[0][1], timeOffsetSeconds: 0 });
-             if (coordinates.length > 1) {
-                 points.push({ lon: coordinates[coordinates.length - 1][0], lat: coordinates[coordinates.length - 1][1], timeOffsetSeconds: totalDuration });
-             }
-        }
-        return points.slice(0, maxPoints);
-    }
+   if (!coordinates || coordinates.length < 2 || totalDuration <= 0 || totalDistance <= 0 || !route.legs) {
+       console.warn("[API WARN] Insufficient route data for point selection. Returning start/end only.");
+       if (coordinates && coordinates.length > 0) {
+           points.push({ lon: coordinates[0][0], lat: coordinates[0][1], timeOffsetSeconds: 0, distanceOffsetMeters: 0 });
+           if (coordinates.length > 1) {
+               points.push({ lon: coordinates[coordinates.length - 1][0], lat: coordinates[coordinates.length - 1][1], timeOffsetSeconds: totalDuration, distanceOffsetMeters: totalDistance });
+           }
+       }
+       return points.slice(0, maxPointsCap); // Apply cap even in fallback
+   }
 
-    // 1. Always add Start Point
-    points.push({ lon: coordinates[0][0], lat: coordinates[0][1], timeOffsetSeconds: 0 });
+   // 1. Always add Start Point
+   points.push({ lon: coordinates[0][0], lat: coordinates[0][1], timeOffsetSeconds: 0, distanceOffsetMeters: 0 });
+   console.log(`[API DEBUG] Added start point.`);
 
-    // 2. Calculate target time offsets
-    const numIntermediate = Math.max(0, maxPoints - 2);
-    const targetTimeOffsets: number[] = [];
-    if (numIntermediate > 0) {
-        for (let i = 1; i <= numIntermediate; i++) {
-            targetTimeOffsets.push(totalDuration * (i / (numIntermediate + 1)));
-        }
-    }
-     console.log('[API DEBUG] Target Time Offsets:', targetTimeOffsets);
+   // 2. Iterate through route steps to find points at distance intervals
+   let accumulatedDistance = 0;
+   let accumulatedDuration = 0;
+   let nextIntervalTarget = intervalMeters;
+   let lastAddedPointIndex = 0; // Track index in our 'points' array
+
+   segmentLoop: for (const segment of route.legs) {
+       if (!segment.steps) continue;
+
+       for (const step of segment.steps) {
+           const stepDistance = step.distance;
+           const stepDuration = step.duration;
+           const stepStartIndex = step.way_points[0];
+           const stepEndIndex = step.way_points[1];
+           const stepCoords = coordinates.slice(stepStartIndex, stepEndIndex + 1);
+
+           if (!stepCoords || stepCoords.length === 0 || stepDistance <= 0) {
+               accumulatedDuration += stepDuration; // Still accumulate duration even if distance is 0/step is weird
+               continue; // Skip steps with no distance or coords
+           }
+
+           // Check if the *end* of this step crosses the next interval target
+           while (accumulatedDistance + stepDistance >= nextIntervalTarget) {
+               const distanceIntoStep = nextIntervalTarget - accumulatedDistance;
+               const fractionOfStepDist = Math.max(0, Math.min(1, distanceIntoStep / stepDistance));
+
+               // Interpolate time based on distance fraction
+               const timeIntoStep = stepDuration * fractionOfStepDist;
+               const targetTime = accumulatedDuration + timeIntoStep;
+
+               // Interpolate coordinates based on distance fraction
+               const coordIndexInStep = Math.round(fractionOfStepDist * (stepCoords.length - 1));
+               const targetCoord = stepCoords[coordIndexInStep];
+
+               const prevPoint = points[lastAddedPointIndex];
+               // Add point if valid and not a duplicate of the previous one
+               if (targetCoord && (targetCoord[0] !== prevPoint.lon || targetCoord[1] !== prevPoint.lat)) {
+                   points.push({
+                       lon: targetCoord[0],
+                       lat: targetCoord[1],
+                       timeOffsetSeconds: targetTime,
+                       distanceOffsetMeters: nextIntervalTarget
+                   });
+                   console.log(`[API DEBUG] Added intermediate point ${points.length -1}: Dist=${(nextIntervalTarget/1000).toFixed(1)}km, Time=${targetTime.toFixed(0)}s, Coords=[${targetCoord[0].toFixed(4)}, ${targetCoord[1].toFixed(4)}]`);
+                   lastAddedPointIndex++;
+
+                   // Check if we hit the cap
+                   if (points.length >= maxPointsCap - 1) { // -1 because we still need to add the end point
+                       console.log(`[API DEBUG] Reached max points cap (${maxPointsCap}) during intermediate selection.`);
+                       break segmentLoop; // Stop adding intermediate points
+                   }
+               } else {
+                   console.log(`[API DEBUG] Skipping duplicate intermediate point near distance ${(nextIntervalTarget/1000).toFixed(1)}km`);
+               }
+
+               // Set the next target distance
+               nextIntervalTarget += intervalMeters;
+           }
+
+           // Accumulate totals for the *entire* step
+           accumulatedDistance += stepDistance;
+           accumulatedDuration += stepDuration;
+
+            // Check cap again after accumulating step totals (in case loop didn't break)
+            if (points.length >= maxPointsCap - 1) {
+                break segmentLoop;
+            }
+       } // end step loop
+   } // end segment loop
+
+   // 3. Always Add End Point (if space allows and it's different)
+   const endCoord = coordinates[coordinates.length - 1];
+   const lastPoint = points[points.length - 1];
+   if (points.length < maxPointsCap && (endCoord[0] !== lastPoint.lon || endCoord[1] !== lastPoint.lat)) {
+       points.push({ lon: endCoord[0], lat: endCoord[1], timeOffsetSeconds: totalDuration, distanceOffsetMeters: totalDistance });
+       console.log(`[API DEBUG] Added end point.`);
+   } else if (points.length >= maxPointsCap && (endCoord[0] !== lastPoint.lon || endCoord[1] !== lastPoint.lat)) {
+       // If cap is reached, replace the last *intermediate* point with the actual end point
+       points[maxPointsCap - 1] = { lon: endCoord[0], lat: endCoord[1], timeOffsetSeconds: totalDuration, distanceOffsetMeters: totalDistance };
+       console.log(`[API DEBUG] Replaced last intermediate with end point due to cap.`);
+   } else {
+        console.log(`[API DEBUG] End point was identical to last added point or cap prevented adding.`);
+   }
 
 
-    // 3. Find coordinates corresponding to target time offsets
-    if (targetTimeOffsets.length > 0 && route.legs) { // Check if route.legs exists
-        let accumulatedDuration = 0;
-        let targetIndex = 0;
-        let lastAddedPointIndex = 0;
-
-        // Iterate through ORS *segments* (legs) and *steps* within them
-        segmentLoop: for (const segment of route.legs) { // Use route.legs (segments)
-            if (!segment.steps) continue; // Skip if segment has no steps
-
-             for (const step of segment.steps) {
-                const stepDuration = step.duration;
-                const stepStartIndex = step.way_points[0];
-                const stepEndIndex = step.way_points[1];
-                // IMPORTANT: Ensure step way_points indices are relative to the *entire* coordinate array
-                const stepCoords = coordinates.slice(stepStartIndex, stepEndIndex + 1);
-
-                if (!stepCoords || stepCoords.length === 0) continue; // Skip empty steps
-
-                while (targetIndex < targetTimeOffsets.length &&
-                       accumulatedDuration + stepDuration >= targetTimeOffsets[targetIndex])
-                {
-                    const targetTime = targetTimeOffsets[targetIndex];
-                    const durationIntoStep = targetTime - accumulatedDuration;
-                    let fractionOfStep = 0;
-                    if (stepDuration > 0) {
-                        fractionOfStep = Math.max(0, Math.min(1, durationIntoStep / stepDuration));
-                    }
-
-                    const coordIndexInStep = Math.round(fractionOfStep * (stepCoords.length - 1));
-                    const targetCoord = stepCoords[coordIndexInStep];
-
-                    const prevPoint = points[lastAddedPointIndex];
-                    if (targetCoord && (targetCoord[0] !== prevPoint.lon || targetCoord[1] !== prevPoint.lat)) {
-                         points.push({ lon: targetCoord[0], lat: targetCoord[1], timeOffsetSeconds: targetTime });
-                         console.log(`[API DEBUG] Added intermediate point ${points.length -1}: Time=${targetTime.toFixed(0)}s, Coords=[${targetCoord[0].toFixed(4)}, ${targetCoord[1].toFixed(4)}]`);
-                         lastAddedPointIndex++;
-                    } else {
-                         console.log(`[API DEBUG] Skipping duplicate intermediate point at time ${targetTime.toFixed(0)}s`);
-                    }
-
-                    targetIndex++;
-                    if (points.length >= maxPoints - 1) break segmentLoop;
-                }
-
-                accumulatedDuration += stepDuration;
-                if (points.length >= maxPoints - 1) break segmentLoop;
-             } // end step loop
-        } // end segment loop
-    } else if(targetTimeOffsets.length > 0) {
-         console.warn("[API WARN] Route data missing 'legs' array for waypoint time calculation.");
-         // Fallback or error? For now, continue without intermediate points based on steps
-    }
-
-
-    // 4. Always Add End Point
-    const endCoord = coordinates[coordinates.length - 1];
-    const lastPoint = points[points.length - 1];
-     if (points.length < maxPoints && (endCoord[0] !== lastPoint.lon || endCoord[1] !== lastPoint.lat)) {
-         points.push({ lon: endCoord[0], lat: endCoord[1], timeOffsetSeconds: totalDuration });
-          console.log(`[API DEBUG] Added end point.`);
-    } else if (points.length === maxPoints && (endCoord[0] !== lastPoint.lon || endCoord[1] !== lastPoint.lat)) {
-        points[maxPoints - 1] = { lon: endCoord[0], lat: endCoord[1], timeOffsetSeconds: totalDuration };
-         console.log(`[API DEBUG] Replaced last intermediate with end point.`);
-    }
-
-    console.log('[API DEBUG] Final selected points count:', points.length);
-    return points;
+   console.log('[API DEBUG] Final selected points count:', points.length);
+   return points; // Return all collected points up to the cap
 }
 
 
@@ -337,10 +350,11 @@ export async function POST(request: Request) {
         // --- End Get Route ---
 
 
-        // --- Select Points (using updated function) ---
-        const MAX_WEATHER_POINTS = 10; // Increased number of points
-        console.log(`[API DEBUG] Selecting up to ${MAX_WEATHER_POINTS} points along route...`);
-        const pointsToCheck = selectPointsAlongRoute(routeData!, MAX_WEATHER_POINTS);
+        // --- Select Points (using distance-based function) ---
+        const WEATHER_INTERVAL_KM = 50; // Target interval in kilometers
+        const MAX_POINTS_SAFEGUARD = 20; // Safeguard cap
+        console.log(`[API DEBUG] Selecting points approx every ${WEATHER_INTERVAL_KM}km (max ${MAX_POINTS_SAFEGUARD}) along route...`);
+        const pointsToCheck = selectPointsAlongRoute(routeData!, WEATHER_INTERVAL_KM, MAX_POINTS_SAFEGUARD);
         // --- End Select Points ---
 
         // --- Calculate Actual Departure Time (needed for arrival type) ---
@@ -375,7 +389,8 @@ export async function POST(request: Request) {
                 time: arrivalTimeAtPointUTC, // Store the calculated arrival time UTC millis
                 temperature: forecast?.temperature,
                 symbolCode: forecast?.symbolCode,
-                windDirection: forecast?.windDirection, // Add wind direction
+                windDirection: forecast?.windDirection,
+                windSpeed: forecast?.windSpeed, // Add wind speed
                 source: index === 0 ? 'start' : index === pointsToCheck.length - 1 ? 'end' : 'intermediate',
             } as WeatherPoint;
         });
@@ -422,7 +437,7 @@ export async function POST(request: Request) {
          }
 
          // Ensure maximum points constraint is met after filtering (should be handled by selection, but as a safeguard)
-         finalWeatherPoints = finalWeatherPoints.slice(0, MAX_WEATHER_POINTS);
+         finalWeatherPoints = finalWeatherPoints.slice(0, MAX_POINTS_SAFEGUARD);
 
 
         // 6. Return Route and Filtered Weather Data

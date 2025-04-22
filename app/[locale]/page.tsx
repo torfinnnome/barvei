@@ -423,6 +423,7 @@ export default function HomePage() {
                                     <th>{t('weatherHeader')}</th>
                                     <th>{t('tempHeader')}</th>
                                     <th>{t('windDirHeader')}</th>
+                                    <th>{t('windSpeedHeader')}</th> {/* Add Wind Speed Header */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -455,6 +456,10 @@ export default function HomePage() {
                                         <td>
                                             {/* Wind Icon */}
                                             {renderWindIcon(point.windDirection)}
+                                        </td>
+                                        <td>
+                                            {/* Wind Speed */}
+                                            {point.windSpeed !== undefined ? `${point.windSpeed.toFixed(1)} m/s` : 'N/A'}
                                         </td>
                                     </tr>
                                 ))}

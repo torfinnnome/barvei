@@ -28,7 +28,8 @@
     "windDirHeader": "Wind",
     "tempHeader": "Temp.",
     "timeHeader": "Time",
-    "pointHeader": "Point"
+    "pointHeader": "Point",
+    "windSpeedHeader": "Wind Spd."
   },
   "Generic": {
     "departure": "Departure",

@@ -17,5 +17,6 @@ export interface WeatherPoint {
     temperature?: number; // Celsius
     symbolCode?: string; // e.g., 'clearsky_day'
     windDirection?: number; // degrees (0-360)
+    windSpeed?: number; // m/s
     source: 'start' | 'end' | 'intermediate';
 }
