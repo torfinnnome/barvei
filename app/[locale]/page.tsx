@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image'; // Import Image for weather icons
 import { useTranslations } from 'next-intl';
 import styles from './page.module.css';
 import type { RouteData, WeatherPoint } from '@/app/api/route-weather/types';

@@ -23,7 +23,12 @@
     "waypointLabel": "Veipunkt {index}:",
     "placeholderWaypoint": "Skriv inn adresse for veipunkt",
     "removeWaypointLabel": "Fjern veipunkt {index}",
-    "addWaypointLabel": "Legg til veipunkt"
+    "addWaypointLabel": "Legg til veipunkt",
+    "weatherHeader": "Vær",
+    "windDirHeader": "Vind",
+    "tempHeader": "Temp.",
+    "timeHeader": "Tid",
+    "pointHeader": "Punkt"
   },
   "Generic": {
     "departure": "Avgang",

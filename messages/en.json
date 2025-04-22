@@ -23,7 +23,12 @@
     "waypointLabel": "Waypoint {index}:",
     "placeholderWaypoint": "Enter waypoint address",
     "removeWaypointLabel": "Remove waypoint {index}",
-    "addWaypointLabel": "Add waypoint"
+    "addWaypointLabel": "Add waypoint",
+    "weatherHeader": "Weather",
+    "windDirHeader": "Wind",
+    "tempHeader": "Temp.",
+    "timeHeader": "Time",
+    "pointHeader": "Point"
   },
   "Generic": {
     "departure": "Departure",

@@ -23,7 +23,12 @@
     "waypointLabel": "Punto intermedio {index}:",
     "placeholderWaypoint": "Introduce la dirección del punto intermedio",
     "removeWaypointLabel": "Eliminar punto intermedio {index}",
-    "addWaypointLabel": "Añadir punto intermedio"
+    "addWaypointLabel": "Añadir punto intermedio",
+    "weatherHeader": "Clima",
+    "windDirHeader": "Viento",
+    "tempHeader": "Temp.",
+    "timeHeader": "Hora",
+    "pointHeader": "Punto"
   },
   "Generic": {
     "departure": "Salida",

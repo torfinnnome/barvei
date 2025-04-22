@@ -16,5 +16,6 @@ export interface WeatherPoint {
     time: number; // Timestamp (milliseconds UTC) for the weather forecast
     temperature?: number; // Celsius
     symbolCode?: string; // e.g., 'clearsky_day'
+    windDirection?: number; // degrees (0-360)
     source: 'start' | 'end' | 'intermediate';
 }

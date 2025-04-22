@@ -119,10 +119,10 @@ async function getWeatherYrNo(lat: number, lon: number, userAgent: string): Prom
 // --- Helper Functions ---
 
 // Find the closest forecast in the time series *after* the target time
-function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { temperature?: number, symbolCode?: string } | null {
+function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { temperature?: number, symbolCode?: string, windDirection?: number } | null {
     if (!timeseries || timeseries.length === 0) return null;
 
-    let bestMatch = null;
+    let bestMatch: { temperature?: number, symbolCode?: string, windDirection?: number } | null = null;
     let smallestDiff = Infinity;
 
     for (const entry of timeseries) {
@@ -149,7 +149,8 @@ function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { 
              temperature: lastEntry.data.instant.details.air_temperature,
              symbolCode: lastEntry.data.next_1_hours?.summary?.symbol_code ||
                          lastEntry.data.next_6_hours?.summary?.symbol_code ||
-                         lastEntry.data.next_12_hours?.summary?.symbol_code
+                         lastEntry.data.next_12_hours?.summary?.symbol_code,
+             windDirection: lastEntry.data.instant?.details?.wind_from_direction
          } : null;
     }
 
@@ -335,8 +336,9 @@ export async function POST(request: Request) {
 
 
         // --- Select Points (using updated function) ---
-        console.log('[API DEBUG] Selecting points along route...');
-        const pointsToCheck = selectPointsAlongRoute(routeData!, 5);
+        const MAX_WEATHER_POINTS = 10; // Increased number of points
+        console.log(`[API DEBUG] Selecting up to ${MAX_WEATHER_POINTS} points along route...`);
+        const pointsToCheck = selectPointsAlongRoute(routeData!, MAX_WEATHER_POINTS);
         // --- End Select Points ---
 
         // --- Calculate Actual Departure Time (needed for arrival type) ---
@@ -371,6 +373,7 @@ export async function POST(request: Request) {
                 time: arrivalTimeAtPointUTC, // Store the calculated arrival time UTC millis
                 temperature: forecast?.temperature,
                 symbolCode: forecast?.symbolCode,
+                windDirection: forecast?.windDirection, // Add wind direction
                 source: index === 0 ? 'start' : index === pointsToCheck.length - 1 ? 'end' : 'intermediate',
             } as WeatherPoint;
         });
@@ -417,7 +420,7 @@ export async function POST(request: Request) {
          }
 
          // Ensure maximum points constraint is met after filtering (should be handled by selection, but as a safeguard)
-         finalWeatherPoints = finalWeatherPoints.slice(0, 5);
+         finalWeatherPoints = finalWeatherPoints.slice(0, MAX_WEATHER_POINTS);
 
 
         // 6. Return Route and Filtered Weather Data
