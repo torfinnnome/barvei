@@ -19,6 +19,9 @@
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1"
   },
+  "engines": {
+    "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
