@@ -257,6 +257,29 @@ export default function HomePage() {
         return date.toLocaleString([], options);
      };
 
+    // --- Icon Helper Functions ---
+
+    // Get Yr.no weather icon URL
+    const getWeatherIconUrl = (symbolCode: string | undefined): string => {
+        if (!symbolCode) return '/placeholder-icon.svg'; // Provide a fallback icon path
+        // Construct the URL based on Yr.no's pattern (check their docs for confirmation)
+        // Using PNG version as SVG might require specific handling or licensing
+        return `https://api.met.no/images/weathericons/png/${symbolCode}.png`;
+    };
+
+    // Render wind direction icon (using simple arrow and rotation)
+    const renderWindIcon = (direction: number | undefined) => {
+        if (direction === undefined) return <span>-</span>;
+        // Basic arrow character, rotated using inline style
+        return (
+            <span style={{ display: 'inline-block', transform: `rotate(${direction}deg)` }} title={`${direction.toFixed(0)}°`}>
+                ↑
+            </span>
+        );
+    };
+
+    // --- End Icon Helper Functions ---
+
 
       // Helper to render suggestion list
      const renderSuggestions = (inputKey: string | number) => (
@@ -391,21 +414,52 @@ export default function HomePage() {
                     })}</h2>
 
                     <h3>{t('weatherPoints')}</h3>
-                    <div className={styles.weatherTimeline}>
-                         {weatherPoints.map((point, index) => (
-                            <div key={index} className={styles.weatherPoint}>
-                                 <h4>
-                                    {index === 0 ? t('startPoint') :
-                                     index === weatherPoints.length - 1 ? t('endPoint') :
-                                     t('intermediatePoint', { index })}
-                                 </h4>
-                                 <p>{t('time')}: {formatDisplayDateTime(point.time)}</p>
-                                 <p>{t('temp')}: {point.temperature?.toFixed(1)}°C</p>
-                                 {/* Basic weather symbol display - yr.no provides codes like 'clearsky_day' */}
-                                 <p>{t('weather')}: {point.symbolCode || 'N/A'}</p>
-                                 {/* You might want to add icons based on symbolCode later */}
-                             </div>
-                        ))}
+                    <div className={styles.weatherTableContainer}> {/* Optional container for styling */}
+                        <table className={styles.weatherTable}>
+                            <thead>
+                                <tr>
+                                    <th>{t('pointHeader')}</th>
+                                    <th>{t('timeHeader')}</th>
+                                    <th>{t('weatherHeader')}</th>
+                                    <th>{t('tempHeader')}</th>
+                                    <th>{t('windDirHeader')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {weatherPoints.map((point, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            {/* Point Label */}
+                                            {index === 0 ? t('startPoint') :
+                                             index === weatherPoints.length - 1 ? t('endPoint') :
+                                             t('intermediatePoint', { index })}
+                                        </td>
+                                        <td>{formatDisplayDateTime(point.time)}</td>
+                                        <td>
+                                            {/* Weather Icon */}
+                                            {point.symbolCode ? (
+                                                <Image
+                                                    src={getWeatherIconUrl(point.symbolCode)}
+                                                    alt={point.symbolCode.replace(/_/g, ' ')} // Basic alt text
+                                                    title={point.symbolCode.replace(/_/g, ' ')} // Tooltip
+                                                    width={32} // Adjust size as needed
+                                                    height={32}
+                                                    className={styles.weatherIcon} // Add class for styling if needed
+                                                />
+                                            ) : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {/* Temperature */}
+                                            {point.temperature !== undefined ? `${point.temperature.toFixed(1)}°C` : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {/* Wind Icon */}
+                                            {renderWindIcon(point.windDirection)}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
              )}

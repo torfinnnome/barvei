@@ -137,7 +137,9 @@ function findForecastForTime(timeseries: any[], targetTimeUTCMillis: number): { 
                  // Look for symbol code in next_1_hours, next_6_hours etc. Prioritize shorter term.
                  symbolCode: entry.data.next_1_hours?.summary?.symbol_code ||
                              entry.data.next_6_hours?.summary?.symbol_code ||
-                             entry.data.next_12_hours?.summary?.symbol_code
+                             entry.data.next_12_hours?.summary?.symbol_code,
+                 // Extract wind direction
+                 windDirection: entry.data.instant?.details?.wind_from_direction // degrees
             } : null;
         }
     }
