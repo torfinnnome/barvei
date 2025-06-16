@@ -13,7 +13,7 @@
     "leaflet": "^1.9.4",
     "lodash.debounce": "^4.0.8",
     "negotiator": "^0.6.3",
-    "next": "^14.2.4",
+    "next": "^14.2.30",
     "next-intl": "^3.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
