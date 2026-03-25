@@ -19,7 +19,13 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'api.met.no',
         port: '',
-        pathname: '/images/weathericons/**', // Allow images specifically from this path
+        pathname: '/images/weathericons/**', // Keep for any other images
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        port: '',
+        pathname: '/metno/weathericons/main/weather/png/**',
       },
     ],
   },

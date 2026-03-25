@@ -259,12 +259,11 @@ export default function HomePage() {
 
     // --- Icon Helper Functions ---
 
-    // Get Yr.no weather icon URL
+    // Get Yr.no weather icon URL from official GitHub repository
     const getWeatherIconUrl = (symbolCode: string | undefined): string => {
-        if (!symbolCode) return '/placeholder-icon.svg'; // Provide a fallback icon path
-        // Construct the URL based on Yr.no's pattern (check their docs for confirmation)
-        // Using PNG version as SVG might require specific handling or licensing
-        return `https://api.met.no/images/weathericons/png/${symbolCode}.png`;
+        if (!symbolCode) return '/placeholder-icon.svg'; 
+        // MET Norway recommends using their GitHub repo for the PNG assets
+        return `https://raw.githubusercontent.com/metno/weathericons/main/weather/png/${symbolCode}.png`;
     };
 
     // Render wind direction icon (using simple arrow and rotation)
