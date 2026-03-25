@@ -21,17 +21,25 @@ const loadMessages = async (locale: string) => {
     }
 };
 
-// Use the {locale} parameter again
-export default getRequestConfig(async ({ locale }) => {
-    console.log(`[i18n Config v3 Param] getRequestConfig received locale: >>>${locale}<<<`);
+// Use the {requestLocale} parameter for next-intl v4
+export default getRequestConfig(async ({ requestLocale }) => {
+    const locale = await requestLocale;
+
+    // Basic validation: If locale is invalid/missing, trigger 404
+    if (!locale || !locales.includes(locale as any)) {
+        console.error(`[i18n Config] Invalid or undefined locale "${locale}" received.`);
+        notFound();
+    }
+
+    console.log(`[i18n Config] getRequestConfig received locale: >>>${locale}<<<`);
 
     // Load messages for the received locale
     const messages = await loadMessages(locale);
 
-    // Return both locale and messages (as required by the other warning)
-    console.log(`[i18n Config v3 Param] Returning locale and messages object for locale: ${locale}`);
+    // Return both locale and messages
+    console.log(`[i18n Config] Returning locale and messages object for locale: ${locale}`);
     return {
-        locale, // Still return the locale received as a parameter
+        locale,
         messages: messages
     };
 });
