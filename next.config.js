@@ -13,6 +13,7 @@ const nextConfig = {
   // Your other Next.js config options go here
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
